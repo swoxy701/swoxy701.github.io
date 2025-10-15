@@ -1,0 +1,20 @@
+// Hayır butonu
+noBtn.addEventListener('click', ()=>{
+  clickCount++;
+  const rect=noBtn.getBoundingClientRect();
+  addFootprint(rect.left+rect.width/2, rect.top+rect.height/2);
+
+  if(clickCount < 3){
+    // 1. veya 2. tıklamada rastgele yere ışınlan
+    const maxX = window.innerWidth - noBtn.offsetWidth;
+    const maxY = window.innerHeight - noBtn.offsetHeight;
+    const randX = Math.random() * maxX;
+    const randY = Math.random() * maxY;
+    noBtn.style.transition = 'transform 0.3s';
+    noBtn.style.transform = `translate(${randX - rect.left}px, ${randY - rect.top}px)`;
+  } else {
+    // 3. tıklamada zıplayarak kaç
+    noBtn.style.animation='jumpAway 1.5s forwards ease-in-out';
+    setTimeout(()=> noBtn.remove(),1500);
+  }
+});
