@@ -1,184 +1,125 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Benimle Çıkar Mısın?</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>İclal, Özür Dilerim 💔</title>
 <style>
-body {
-  margin:0; padding:0; height:100vh; overflow:hidden;
-  text-align:center; font-family:'Poppins', sans-serif;
-  background: linear-gradient(120deg,#ff9a9e,#fad0c4,#a18cd1,#fbc2eb);
-  background-size:400% 400%;
-  animation: gradientBG 15s ease infinite;
-}
-@keyframes gradientBG {
-  0%{background-position:0% 50%;}
-  50%{background-position:100% 50%;}
-  100%{background-position:0% 50%;}
-}
-h1 {
-  margin-top:50px; font-size:28px; color:#ff4d7e; text-shadow:2px 2px #fff0f5;
-}
-button {
-  padding:15px 30px; font-size:18px; margin:20px; border:none;
-  border-radius:8px; cursor:pointer; transition:transform 0.3s;
-}
-#yesBtn { background-color:#28a745;color:white; z-index:2; }
-#noBtn { background-color:#ff355e;color:white; z-index:2; position:relative; }
-#noBtn:hover { transform:scale(1.1); }
+  body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ffe6ec, #f0f7ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-family: "Segoe UI", sans-serif;
+  }
 
-.modal {
-  position:fixed; top:0; left:0; width:100%; height:100%;
-  background: rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center;
-  opacity:0; pointer-events:none; transition:opacity .3s;
-}
-.modal.show { opacity:1; pointer-events:auto; }
-.modal .box {
-  background:white; padding:25px 35px; border-radius:16px; text-align:center;
-  box-shadow:0 0 20px rgba(255,77,126,0.3);
-}
-.modal h2 { color:#ff4d7e; }
-.modal p { font-size:17px; margin-top:10px; }
+  h1 {
+    font-size: 24px;
+    color: #222;
+    margin-bottom: 10px;
+    text-align: center;
+  }
 
-canvas { position:fixed; top:0; left:0; pointer-events:none; z-index:1; }
+  p {
+    text-align: center;
+    color: #444;
+    margin: 0 20px 20px;
+    font-size: 16px;
+  }
 
-.floatingText {
-  position:absolute; font-weight:bold; font-size:20px;
-  background: linear-gradient(90deg,#ff4d7e,#ffd166,#4cc9f0);
-  -webkit-background-clip:text; color:transparent;
-  text-shadow:0 0 5px #ff4d7e; pointer-events:none;
-}
-.heart {
-  position:absolute; font-size:20px; pointer-events:none;
-  text-shadow:0 0 10px #ff4d7e;
-  animation:floatUp 5s linear forwards;
-}
-@keyframes floatUp {
-  0%{transform:translateY(0) rotate(0deg);}
-  100%{transform:translateY(-120vh) rotate(360deg); opacity:0;}
-}
+  .btns {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+  }
+
+  button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    color: white;
+    transition: transform 0.2s;
+  }
+
+  button:hover {
+    transform: scale(1.05);
+  }
+
+  #yes { background: #22c55e; }
+  #no { background: #ef4444; }
+
+  .message {
+    text-align: center;
+    font-size: 18px;
+    color: #222;
+    margin-top: 20px;
+  }
+
+  .heart, .broken-heart {
+    position: absolute;
+    font-size: 20px;
+    animation: floatUp 4s linear forwards;
+    opacity: 0.8;
+  }
+
+  .heart { color: #ff4d6d; }
+  .broken-heart { color: #a00; }
+
+  @keyframes floatUp {
+    0% { transform: translateY(100vh) scale(0.5); opacity: 0.9; }
+    100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+  }
 </style>
 </head>
 <body>
 
-<h1>Benimle çıkar mısın? 💕</h1>
-<button id="yesBtn">Evet 💖</button>
-<button id="noBtn">Hayır 🙈</button>
+  <h1>İclal 💔</h1>
+  <p>Seni kırdığım için gerçekten çok üzgünüm.<br>Beni affeder misin?</p>
 
-<div id="modal" class="modal">
-  <div class="box">
-    <h2>💞 Evet! 🎉</h2>
-    <p>Harika! Seni Kedili Park’ta bekliyorum 💖</p>
-    <button onclick="closeModal()">Tamam 😍</button>
+  <div class="btns">
+    <button id="yes">Evet 💖</button>
+    <button id="no">Hayır 😔</button>
   </div>
-</div>
 
-<canvas id="confetti"></canvas>
+  <div class="message" id="msg"></div>
 
-<script>
-const noBtn = document.getElementById('noBtn');
-const yesBtn = document.getElementById('yesBtn');
-const modal = document.getElementById('modal');
-const canvas = document.getElementById('confetti');
-const ctx = canvas.getContext('2d');
-let confettiParticles = [];
-let clickCount = 0;
+  <script>
+    // Uçan kalpler
+    function createHeart(type="heart") {
+      const el = document.createElement("div");
+      el.classList.add(type);
+      el.textContent = type === "heart" ? "💖" : "💔";
+      el.style.left = Math.random() * 100 + "vw";
+      el.style.animationDuration = 3 + Math.random() * 3 + "s";
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 6000);
+    }
 
-// Canvas boyutu
-function resizeCanvas(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
+    // Sürekli normal uçan kalpler
+    const normalHearts = setInterval(()=>createHeart("heart"), 300);
 
-// Hayır butonu kaçma davranışı
-noBtn.addEventListener('click', ()=>{
-  clickCount++;
-  const rect=noBtn.getBoundingClientRect();
-  const maxX = window.innerWidth - rect.width - 30;
-  const maxY = window.innerHeight - rect.height - 150;
-  const minX = 30;
-  const minY = 100;
+    const msg = document.getElementById("msg");
 
-  // Her tıklamada daha az uzaklaşsın, mobilde kenara kaçmasın
-  const randX = Math.random() * (maxX - minX) + minX;
-  const randY = Math.random() * (maxY - minY) + minY;
-  noBtn.style.position='absolute';
-  noBtn.style.left=randX + 'px';
-  noBtn.style.top=randY + 'px';
-});
+    document.getElementById("yes").onclick = () => {
+      msg.innerHTML = "💞 Teşekkür ederimmmm💕";
+      // Kalpler çoğalsın
+      const yesHearts = setInterval(()=>createHeart("heart"), 100);
+      setTimeout(()=>clearInterval(yesHearts), 5000);
+    };
 
-// Evet butonu
-const audio = new Audio('https://www.soundjay.com/button/beep-07.mp3');
-yesBtn.addEventListener('click', () => { audio.play(); modal.classList.add('show'); startConfetti(); });
-function closeModal(){ modal.classList.remove('show'); stopConfetti(); }
+    document.getElementById("no").onclick = () => {
+      msg.innerHTML = "😔 Üzdüğüm için çok pişmanım...";
+      // Kırık kalpler yağsın
+      const brokenHearts = setInterval(()=>createHeart("broken-heart"), 150);
+      setTimeout(()=>clearInterval(brokenHearts), 5000);
+    };
+  </script>
 
-// Konfeti animasyonu
-function random(min,max){return Math.random()*(max-min)+min;}
-function createConfetti(num=80){
-  confettiParticles=[];
-  for(let i=0;i<num;i++){
-    confettiParticles.push({
-      x:random(0,canvas.width),
-      y:random(-canvas.height,0),
-      w:random(6,12),
-      h:random(8,16),
-      color:['#ff4d7e','#ffd166','#8ac926','#4cc9f0','#ff6b82'][Math.floor(Math.random()*5)],
-      vx:random(-1,1),
-      vy:random(2,5),
-      rot:random(0,360),
-      rotSpeed:random(-4,4)
-    });
-  }
-}
-let confettiRAF;
-function drawConfetti(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  confettiParticles.forEach(p=>{
-    ctx.save();
-    ctx.translate(p.x,p.y);
-    ctx.rotate(p.rot*Math.PI/180);
-    ctx.fillStyle=p.color;
-    ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
-    ctx.restore();
-    p.x+=p.vx;
-    p.y+=p.vy;
-    p.rot+=p.rotSpeed;
-    if(p.y>canvas.height)p.y=random(-200,-10);
-  });
-  confettiRAF=requestAnimationFrame(drawConfetti);
-}
-function startConfetti(){ createConfetti(); drawConfetti(); }
-function stopConfetti(){ cancelAnimationFrame(confettiRAF); ctx.clearRect(0,0,canvas.width,canvas.height); }
-
-// Kalpler
-function createHeart(){
-  const heart=document.createElement('div');
-  heart.className='heart';
-  heart.textContent='💖';
-  heart.style.fontSize=(Math.random()*20+15)+'px';
-  heart.style.left=Math.random()*window.innerWidth+'px';
-  document.body.appendChild(heart);
-  setTimeout(()=>heart.remove(),5000);
-}
-setInterval(createHeart,400);
-
-// Yüzen metinler
-const messages=['Seni seviyorum 💖','Kalbim seninle ❤️','Seninle her şey güzel 💫','Sana aşığım 💕','Sen benim mucizemsin 🌸','Sonsuza kadar seninle 💞'];
-function floatingText(msg){
-  const text=document.createElement('div');
-  text.className='floatingText';
-  text.textContent=msg;
-  text.style.left=Math.random()*window.innerWidth+'px';
-  text.style.top=window.innerHeight+'px';
-  document.body.appendChild(text);
-  let top=window.innerHeight;
-  const interval=setInterval(()=>{
-    top-=2; text.style.top=top+'px';
-    if(top<-50){ clearInterval(interval); text.remove(); }
-  },30);
-}
-setInterval(()=>{ floatingText(messages[Math.floor(Math.random()*messages.length)]); },3000);
-</script>
 </body>
 </html>
